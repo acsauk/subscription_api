@@ -15,7 +15,7 @@ class SubscribeAPhoneTest extends TestCase
         $product_id = 'productid1';
 
         // Act
-        $response = $this->post("/api/v1/subscribe?msisdn=$msisdn&product_id=$product_id'");
+        $response = $this->post("/api/v1/subscribe?msisdn={$msisdn}&product_id={$product_id}'");
 
         // Assert
         $response->assertStatus(200)
