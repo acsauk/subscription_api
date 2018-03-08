@@ -18,7 +18,7 @@ class SubscribeAPhoneTest extends TestCase
         $response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}'");
 
         // Assert
-        $response->assertStatus(200)
-          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => true]);
+        $response->assertStatus(201)
+          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => 1]);
     }
 }
