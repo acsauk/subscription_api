@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Subscription;
+use App\Htpp\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/subscriptions/subscribe', function(Request $request) {
-    return Subscription::create($request->all());
-});
+Route::get('/subscriptions/subscribe', 'SubscriptionController@subscribe');

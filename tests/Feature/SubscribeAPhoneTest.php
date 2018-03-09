@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Subscription;
 
 class SubscribeAPhoneTest extends TestCase
 {
@@ -15,10 +16,15 @@ class SubscribeAPhoneTest extends TestCase
         $product_id = 'productid1';
 
         // Act
-        $response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}'");
+        $response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}");
 
         // Assert
         $response->assertStatus(201)
-          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => 1]);
+          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id]);
+
+        $content = json_decode($response->getContent(), true);
+
+        $subscription = Subscription::find($content['id']);
+        $this->assertEquals($subscription->active, 1);
     }
 }
