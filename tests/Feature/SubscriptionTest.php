@@ -65,4 +65,28 @@ class SubscriptionTest extends TestCase
         $response->assertStatus(200)
           ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => 1]);
     }
+
+    /** @test */
+    public function user_can_search_for_subscriptions_with_msisdn()
+    {
+        // Arrange
+        $active_subscription_1 = factory(Subscription::class)->create();
+        $active_subscription_2 = factory(Subscription::class)->create(
+          ['product_id' => 'productid2']
+        );
+
+        // Act
+        $response = $this->get("/api/subscriptions?msisdn={$active_subscription_1->msisdn}");
+
+        // Assert
+        $response->assertStatus(200)
+          ->assertJson([
+                          ['msisdn' => $active_subscription_1->msisdn,
+                           'product_id' => $active_subscription_1->product_id,
+                           'active' => 1],
+                           ['msisdn' => $active_subscription_2->msisdn,
+                            'product_id' => $active_subscription_2->product_id,
+                            'active' => 1]
+                       ]);
+    }
 }

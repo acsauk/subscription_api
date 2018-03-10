@@ -6,7 +6,7 @@ $faker = Faker::create('en_GB');
 $factory->define(App\Subscription::class, function ($faker) {
     return [
         'msisdn' => '07535999111',
-        'product_id' => 'jCJ9p827yUKtyMbPr29N',
+        'product_id' => 'productid1',
         'active' => 1
     ];
 });
