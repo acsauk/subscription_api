@@ -33,18 +33,14 @@ class SubscriptionController extends Controller
       $msisdn = $request->input('msisdn') ?: '';
       $product_id = $request->input('product_id') ?: '';
 
-      $subscription;
-
       if($msisdn && $product_id) {
-        $subscription = Subscription::where('msisdn', $msisdn)
+        return Subscription::where('msisdn', $msisdn)
                                     ->where('product_id', $product_id)
                                     ->first();
       } elseif ($msisdn && $product_id == '') {
-        $subscription = Subscription::where('msisdn', $msisdn)->get();
+        return Subscription::where('msisdn', $msisdn)->get();
       } elseif ($msisdn == '' && $product_id) {
-        $subscription = Subscription::where('product_id', $product_id)->get();
+        return Subscription::where('product_id', $product_id)->get();
       }
-
-      return $subscription;
     }
 }
