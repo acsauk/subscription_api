@@ -9,8 +9,7 @@ class SubscriptionController extends Controller
 {
     public function subscribe(Request $request)
     {
-      $subscription = Subscription::create($request->all());
-      return $subscription;
+      return Subscription::create($request->all());
     }
 
     public function unsubscribe(Request $request)
