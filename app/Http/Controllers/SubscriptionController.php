@@ -41,6 +41,8 @@ class SubscriptionController extends Controller
                                     ->first();
       } elseif ($msisdn && $product_id == '') {
         $subscription = Subscription::where('msisdn', $msisdn)->get();
+      } elseif ($msisdn == '' && $product_id) {
+        $subscription = Subscription::where('product_id', $product_id)->get();
       }
 
       return $subscription;
