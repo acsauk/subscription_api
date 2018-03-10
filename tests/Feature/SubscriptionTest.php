@@ -89,4 +89,28 @@ class SubscriptionTest extends TestCase
                             'active' => 1]
                        ]);
     }
+
+    /** @test */
+    public function user_can_search_for_subscriptions_with_product_id()
+    {
+        // Arrange
+        $active_subscription_1 = factory(Subscription::class)->create();
+        $active_subscription_2 = factory(Subscription::class)->create(
+          ['msisdn' => '07535123456']
+        );
+
+        // Act
+        $response = $this->get("/api/subscriptions?product_id={$active_subscription_1->product_id}");
+
+        // Assert
+        $response->assertStatus(200)
+          ->assertJson([
+                          ['msisdn' => $active_subscription_1->msisdn,
+                           'product_id' => $active_subscription_1->product_id,
+                           'active' => 1],
+                           ['msisdn' => $active_subscription_2->msisdn,
+                            'product_id' => $active_subscription_2->product_id,
+                            'active' => 1]
+                       ]);
+    }
 }
