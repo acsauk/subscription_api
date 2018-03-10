@@ -30,12 +30,18 @@ class SubscriptionController extends Controller
 
     public function search(Request $request)
     {
-      $msisdn = $request->input('msisdn');
-      $product_id = $request->input('product_id');
-      
-      $subscription = Subscription::where('msisdn', $msisdn)
-                                  ->where('product_id', $product_id)
-                                  ->first();
+      $msisdn = $request->input('msisdn') ?: '';
+      $product_id = $request->input('product_id') ?: '';
+
+      $subscription;
+
+      if($msisdn && $product_id) {
+        $subscription = Subscription::where('msisdn', $msisdn)
+                                    ->where('product_id', $product_id)
+                                    ->first();
+      } elseif ($msisdn && $product_id == '') {
+        $subscription = Subscription::where('msisdn', $msisdn)->get();
+      }
 
       return $subscription;
     }
