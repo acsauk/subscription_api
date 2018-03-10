@@ -27,4 +27,16 @@ class SubscriptionController extends Controller
 
       return $subscription;
     }
+
+    public function search(Request $request)
+    {
+      $msisdn = $request->input('msisdn');
+      $product_id = $request->input('product_id');
+      
+      $subscription = Subscription::where('msisdn', $msisdn)
+                                  ->where('product_id', $product_id)
+                                  ->first();
+
+      return $subscription;
+    }
 }
