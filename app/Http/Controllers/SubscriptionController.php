@@ -12,4 +12,19 @@ class SubscriptionController extends Controller
       $subscription = Subscription::create($request->all());
       return $subscription;
     }
+
+    public function unsubscribe(Request $request)
+    {
+      $msisdn = $request->input('msisdn');
+      $product_id = $request->input('product_id');
+
+      $subscription = Subscription::where('msisdn', $msisdn)
+                                  ->where('product_id', $product_id)
+                                  ->first();
+      $subscription->active = 0;
+
+      $subscription->save();
+
+      return $subscription;
+    }
 }

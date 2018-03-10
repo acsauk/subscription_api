@@ -32,8 +32,9 @@ class SubscriptionTest extends TestCase
     public function user_can_unsubscribe_a_phone_from_product_id()
     {
         // Arrange
-        $msisdn = '07535123123';
-        $product_id = 'productid2';
+        $active_subscription = Subscription::all()->first();
+        $msisdn = $active_subscription->msisdn;
+        $product_id = $active_subscription->product_id;
 
         // Act
         $response = $this->get("/api/subscriptions/unsubscribe?msisdn={$msisdn}&product_id={$product_id}");
@@ -42,9 +43,7 @@ class SubscriptionTest extends TestCase
         $response->assertStatus(200)
           ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => 0]);
 
-        $content = json_decode($response->getContent(), true);
-
-        $subscription = Subscription::find($content['id']);
-        $this->assertEquals($subscription->active, 0);
+        $updated_subscription = Subscription::find($active_subscription);
+        $this->assertEquals($active_subscription->active, 0);
     }
 }
