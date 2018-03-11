@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Subscription as Subscription;
+use Carbon\Carbon;
 
 class SubscriptionTest extends TestCase
 {
@@ -153,9 +154,9 @@ class SubscriptionTest extends TestCase
                           ['msisdn' => $active_subscription_1->msisdn,
                            'product_id' => $active_subscription_1->product_id,
                            'active' => 1],
-                           ['msisdn' => $active_subscription_2->msisdn,
-                            'product_id' => $active_subscription_2->product_id,
-                            'active' => 1]
+                          ['msisdn' => $active_subscription_2->msisdn,
+                           'product_id' => $active_subscription_2->product_id,
+                           'active' => 1]
                        ]);
     }
 
@@ -209,9 +210,9 @@ class SubscriptionTest extends TestCase
                           ['msisdn' => $active_subscription_1->msisdn,
                            'product_id' => $active_subscription_1->product_id,
                            'active' => 1],
-                           ['msisdn' => $active_subscription_2->msisdn,
-                            'product_id' => $active_subscription_2->product_id,
-                            'active' => 1]
+                          ['msisdn' => $active_subscription_2->msisdn,
+                           'product_id' => $active_subscription_2->product_id,
+                           'active' => 1]
                        ]);
     }
 
@@ -237,5 +238,22 @@ class SubscriptionTest extends TestCase
                            'product_id' => $active_subscription_2->product_id,
                            'active' => 1]
                        ]);
+    }
+
+    /** @test */
+    public function subscription_date_is_maintained()
+    {
+      // Arrange
+      $msisdn = '07535123123';
+      $product_id = 'productid1';
+
+      // Act
+      $subscribed_response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}");
+
+      // Assert
+      $content = json_decode($subscribed_response->getContent(), true);
+
+      $subscription = Subscription::find($content['id']);
+      $this->assertEquals($subscription->subscribed_date, Carbon::now()->format('Y-m-d'));
     }
 }

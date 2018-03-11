@@ -39,7 +39,8 @@ class SubscriptionController extends Controller
       }
     }
 
-    private function get_subscriptions_by_msisdn($msisdn) {
+    private function get_subscriptions_by_msisdn($msisdn)
+    {
       $alias = $msisdn;
 
       if($msisdn[0] != 'A') {
@@ -51,17 +52,20 @@ class SubscriptionController extends Controller
                          ->get();
     }
 
-    private function get_subscriptions_by_product_id($product_id) {
+    private function get_subscriptions_by_product_id($product_id)
+    {
       return Subscription::where('product_id', $product_id)->get();
     }
 
-    private function get_subscription($msisdn, $product_id) {
+    private function get_subscription($msisdn, $product_id)
+    {
       return Subscription::where('msisdn', $msisdn)
-                          ->where('product_id', $product_id)
-                          ->first();
+                         ->where('product_id', $product_id)
+                         ->first();
     }
 
-    private function get_msisdn_alias($msisdn) {
+    private function get_msisdn_alias($msisdn)
+    {
       $client = new Client();
       return $client->request('GET', "http://interview.pmcservices.co.uk/alias/lookup?msisdn={$msisdn}")->getBody();
     }
