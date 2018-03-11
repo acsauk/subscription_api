@@ -234,8 +234,6 @@ class SubscriptionTest extends TestCase
           ['product_id' => 'productid2']
         );
 
-        // Mock call to API here to return msisdn above when feeding in phone number from factory. Check videos to see mocking example
-
         // Act
         $response = $this->get("/api/subscriptions?msisdn={$active_subscription_2->msisdn}");
 
