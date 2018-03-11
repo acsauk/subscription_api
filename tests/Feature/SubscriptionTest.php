@@ -34,7 +34,8 @@ class SubscriptionTest extends TestCase
     public function user_can_subscribe_a_phone_to_product_id_international_format()
     {
         // Arrange
-        $msisdn = '+447535123123';
+        // Mimic auto-encoding in laravel
+        $msisdn = '%2B447535123123';
         $product_id = 'productid1';
 
         // Act
@@ -42,13 +43,15 @@ class SubscriptionTest extends TestCase
 
         // Assert
         $response->assertStatus(201)
-          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id]);
+          // Mimic auto-decoding in laravel
+          ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id]);
 
         $content = json_decode($response->getContent(), true);
 
         $subscription = Subscription::find($content['id']);
         $this->assertEquals($subscription->active, 1);
-        $this->assertEquals($subscription->msisdn, $msisdn);
+        // Mimic auto-decoding in laravel
+        $this->assertEquals($subscription->msisdn, urldecode($msisdn));
     }
 
     /** @test */
@@ -87,7 +90,7 @@ class SubscriptionTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
-        // Mimic auto-decoding in laravel 
+        // Mimic auto-decoding in laravel
           ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id, 'active' => 0]);
 
         $updated_subscription = Subscription::find($active_subscription->id);
@@ -112,6 +115,27 @@ class SubscriptionTest extends TestCase
     }
 
     /** @test */
+    public function user_can_search_for_subscription_with_msisdn_and_product_id_international_format()
+    {
+        // Arrange
+        $active_subscription = factory(Subscription::class)->create(
+            ['msisdn' => '+447535123123']
+        );
+
+        // Mimic auto-encoding in laravel
+        $msisdn = urlencode($active_subscription->msisdn);
+        $product_id = $active_subscription->product_id;
+
+        // Act
+        $response = $this->get("/api/subscriptions?msisdn={$msisdn}&product_id={$product_id}");
+
+        // Assert
+        $response->assertStatus(200)
+          // Mimic auto-decoding in laravel
+          ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id, 'active' => 1]);
+    }
+
+    /** @test */
     public function user_can_search_for_subscriptions_with_msisdn()
     {
         // Arrange
@@ -132,6 +156,38 @@ class SubscriptionTest extends TestCase
                            ['msisdn' => $active_subscription_2->msisdn,
                             'product_id' => $active_subscription_2->product_id,
                             'active' => 1]
+                       ]);
+    }
+
+    /** @test */
+    public function user_can_search_for_subscriptions_with_msisdn_international_format()
+    {
+        // Arrange
+        $active_subscription_1 = factory(Subscription::class)->create(
+          ['msisdn' => '+447535123123']
+        );
+        $active_subscription_2 = factory(Subscription::class)->create(
+          ['msisdn' => '+447535123123'],
+          ['product_id' => 'productid2']
+        );
+        
+        // Mimic auto-encoding in laravel
+        $msisdn = urlencode($active_subscription_1->msisdn);
+
+        // Act
+        $response = $this->get("/api/subscriptions?msisdn={$msisdn}");
+
+        // Assert
+        $response->assertStatus(200)
+          ->assertJson([
+                          // Mimic auto-decoding in laravel
+                          ['msisdn' => urldecode($msisdn),
+                           'product_id' => $active_subscription_1->product_id,
+                           'active' => 1],
+                          // Mimic auto-decoding in laravel
+                          ['msisdn' => urldecode($msisdn),
+                           'product_id' => $active_subscription_2->product_id,
+                           'active' => 1]
                        ]);
     }
 
