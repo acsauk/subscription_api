@@ -256,4 +256,20 @@ class SubscriptionTest extends TestCase
       $subscription = Subscription::find($content['id']);
       $this->assertEquals($subscription->subscribed_date, Carbon::now()->format('Y-m-d'));
     }
+
+    /** @test */
+    public function unsubscription_date_is_maintained()
+    {
+      // Arrange
+      $active_subscription = factory(Subscription::class)->create();
+
+      // Act
+      $unsubscribed_response = $this->get("/api/subscriptions/unsubscribe?msisdn={$active_subscription->msisdn}&product_id={$active_subscription->product_id}");
+
+      // Assert
+      $content = json_decode($unsubscribed_response->getContent(), true);
+
+      $subscription = Subscription::find($content['id']);
+      $this->assertEquals($subscription->unsubscribed_date, Carbon::now()->format('Y-m-d'));
+    }
 }
