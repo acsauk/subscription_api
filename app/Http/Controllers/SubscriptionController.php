@@ -48,7 +48,7 @@ class SubscriptionController extends Controller
 
     private function get_subscription($msisdn, $product_id) {
       return Subscription::where('msisdn', $msisdn)
-                                  ->where('product_id', $product_id)
-                                  ->first();
+                          ->where('product_id', $product_id)
+                          ->first();
     }
 }
