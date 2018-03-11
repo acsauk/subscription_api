@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Subscription;
+use GuzzleHttp\Client;
 
 class SubscriptionController extends Controller
 {
@@ -39,7 +40,15 @@ class SubscriptionController extends Controller
     }
 
     private function get_subscriptions_by_msisdn($msisdn) {
-      return Subscription::where('msisdn', $msisdn)->get();
+      $alias = $msisdn;
+
+      if($msisdn[0] != 'A') {
+        $alias = $this->get_msisdn_alias($msisdn);
+      }
+
+      return Subscription::where('msisdn', $msisdn)
+                         ->orWhere('msisdn', $alias)
+                         ->get();
     }
 
     private function get_subscriptions_by_product_id($product_id) {
@@ -50,5 +59,10 @@ class SubscriptionController extends Controller
       return Subscription::where('msisdn', $msisdn)
                           ->where('product_id', $product_id)
                           ->first();
+    }
+
+    private function get_msisdn_alias($msisdn) {
+      $client = new Client();
+      return $client->request('GET', "http://interview.pmcservices.co.uk/alias/lookup?msisdn={$msisdn}")->getBody();
     }
 }

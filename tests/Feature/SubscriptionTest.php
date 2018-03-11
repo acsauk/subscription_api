@@ -215,16 +215,6 @@ class SubscriptionTest extends TestCase
                        ]);
     }
 
-    // A msisdn may also be an alias for a phone number in place of the number.
-    //
-    // Aliases will start with the character A.
-    //
-    // During a search, a phone number will always be provided, but should perform a lookup on the provided alias
-    // lookup api to determine any matching alias and then return the correct subscription for either the phone
-    // number or alias.
-    //
-    // *See alias lookup below.*
-
     /** @test */
     public function user_can_search_for_subscriptions_with_msisdn_alias()
     {
@@ -235,7 +225,7 @@ class SubscriptionTest extends TestCase
         );
 
         // Act
-        $response = $this->get("/api/subscriptions?msisdn={$active_subscription_2->msisdn}");
+        $response = $this->get("/api/subscriptions?msisdn={$active_subscription_1->msisdn}");
 
         // Assert
         $response->assertStatus(200)
