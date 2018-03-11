@@ -25,6 +25,7 @@ class SubscriptionController extends Controller
 
         $subscription = $this->get_subscription($msisdn, $product_id);
         $subscription->active = 0;
+        $subscription->unsubscribed_date = Carbon::now()->format('Y-m-d');
         $subscription->save();
 
         return $subscription;
