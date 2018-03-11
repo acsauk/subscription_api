@@ -170,7 +170,7 @@ class SubscriptionTest extends TestCase
           ['msisdn' => '+447535123123'],
           ['product_id' => 'productid2']
         );
-        
+
         // Mimic auto-encoding in laravel
         $msisdn = urlencode($active_subscription_1->msisdn);
 
@@ -212,6 +212,42 @@ class SubscriptionTest extends TestCase
                            ['msisdn' => $active_subscription_2->msisdn,
                             'product_id' => $active_subscription_2->product_id,
                             'active' => 1]
+                       ]);
+    }
+
+    // A msisdn may also be an alias for a phone number in place of the number.
+    //
+    // Aliases will start with the character A.
+    //
+    // During a search, a phone number will always be provided, but should perform a lookup on the provided alias
+    // lookup api to determine any matching alias and then return the correct subscription for either the phone
+    // number or alias.
+    //
+    // *See alias lookup below.*
+
+    /** @test */
+    public function user_can_search_for_subscriptions_with_msisdn_alias()
+    {
+        // Arrange
+        $active_subscription_1 = factory(Subscription::class)->create();
+        $active_subscription_2 = factory(Subscription::class)->states('alias_msisdn')->create(
+          ['product_id' => 'productid2']
+        );
+
+        // Mock call to API here to return msisdn above when feeding in phone number from factory. Check videos to see mocking example
+
+        // Act
+        $response = $this->get("/api/subscriptions?msisdn={$active_subscription_2->msisdn}");
+
+        // Assert
+        $response->assertStatus(200)
+          ->assertJson([
+                          ['msisdn' => $active_subscription_1->msisdn,
+                           'product_id' => $active_subscription_1->product_id,
+                           'active' => 1],
+                          ['msisdn' => $active_subscription_2->msisdn,
+                           'product_id' => $active_subscription_2->product_id,
+                           'active' => 1]
                        ]);
     }
 }

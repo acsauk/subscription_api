@@ -14,3 +14,7 @@ $factory->define(App\Subscription::class, function ($faker) {
 $factory->state(App\Subscription::class, 'unsubscibed', [
     'active' => 0,
 ]);
+
+$factory->state(App\Subscription::class, 'alias_msisdn', [
+    'msisdn' => 'A56A75CC5C8C2',
+]);
