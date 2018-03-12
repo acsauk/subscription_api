@@ -23,8 +23,8 @@ When searching for a subscription the mobile phone number can be provided in a l
   - DB_HOST=127.0.0.1
   - DB_PORT=3306
   - DB_DATABASE=subscription_api
-  - DB_USERNAME=<YOUR USERNAME HERE>
-  - DB_PASSWORD=<YOUR PASSWORD HERE>
+  - DB_USERNAME=YOUR MYSQL USERNAME HERE
+  - DB_PASSWORD=YOUR MYSQL PASSWORD HERE
 - Run `php artisan migrate`
 
 ## Tests
