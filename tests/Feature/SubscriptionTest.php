@@ -32,6 +32,30 @@ class SubscriptionTest extends TestCase
     }
 
     /** @test */
+    public function user_can_subscribe_a_phone_to_product_id_international_format()
+    {
+        // Arrange
+        // Mimic auto-encoding in laravel
+        $msisdn = '%2B447535123123';
+        $product_id = 'productid1';
+
+        // Act
+        $response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}");
+
+        // Assert
+        $response->assertStatus(201)
+          // Mimic auto-decoding in laravel
+          ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id]);
+
+        $content = json_decode($response->getContent(), true);
+
+        $subscription = Subscription::find($content['id']);
+        $this->assertEquals($subscription->active, 1);
+        // Mimic auto-decoding in laravel
+        $this->assertEquals($subscription->msisdn, urldecode($msisdn));
+    }
+
+    /** @test */
     public function user_can_subscribe_a_phone_to_product_id_json()
     {
         // Arrange
@@ -54,30 +78,6 @@ class SubscriptionTest extends TestCase
                   'updated_at',
                   'subscribed_date'
             ]);
-    }
-
-    /** @test */
-    public function user_can_subscribe_a_phone_to_product_id_international_format()
-    {
-        // Arrange
-        // Mimic auto-encoding in laravel
-        $msisdn = '%2B447535123123';
-        $product_id = 'productid1';
-
-        // Act
-        $response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}");
-
-        // Assert
-        $response->assertStatus(201)
-          // Mimic auto-decoding in laravel
-          ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id]);
-
-        $content = json_decode($response->getContent(), true);
-
-        $subscription = Subscription::find($content['id']);
-        $this->assertEquals($subscription->active, 1);
-        // Mimic auto-decoding in laravel
-        $this->assertEquals($subscription->msisdn, urldecode($msisdn));
     }
 
     /** @test */
@@ -121,6 +121,30 @@ class SubscriptionTest extends TestCase
 
         $updated_subscription = Subscription::find($active_subscription->id);
         $this->assertEquals($updated_subscription->active, 0);
+    }
+
+    /** @test */
+    public function user_can_unsubscribe_a_phone_from_product_id_json()
+    {
+        // Arrange
+        $active_subscription = factory(Subscription::class)->create(
+            ['msisdn' => '+447535123123']
+        );
+
+        $payload = [
+            'msisdn' => $active_subscription->msisdn,
+            'product_id' => $active_subscription->product_id
+        ];
+
+        // Act
+        $this->json('post', '/api/subscriptions/unsubscribe', $payload)
+        // Assert
+            ->assertStatus(200)
+            ->assertJson([
+                'msisdn' => [$active_subscription->msisdn],
+                'product_id' => [$active_subscription->product_id],
+                'active' => [0]
+            ]);
     }
 
     /** @test */
