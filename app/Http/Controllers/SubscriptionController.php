@@ -16,7 +16,7 @@ class SubscriptionController extends Controller
           'product_id' => $request->input('product_id'),
           'subscribed_date' => Carbon::now()->format('Y-m-d')
         ]);
-        
+
         return response()->json($subscription, 201);
     }
 
@@ -30,7 +30,7 @@ class SubscriptionController extends Controller
         $subscription->unsubscribed_date = Carbon::now()->format('Y-m-d');
         $subscription->save();
 
-        return $subscription;
+        return response()->json($subscription, 200);
     }
 
     public function search(Request $request)

@@ -22,4 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/subscriptions/subscribe', 'SubscriptionController@subscribe');
 Route::post('/subscriptions/subscribe', 'SubscriptionController@subscribe');
 Route::get('/subscriptions/unsubscribe', 'SubscriptionController@unsubscribe');
+Route::post('/subscriptions/unsubscribe', 'SubscriptionController@unsubscribe');
 Route::get('/subscriptions', 'SubscriptionController@search');

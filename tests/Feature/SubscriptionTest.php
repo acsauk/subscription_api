@@ -71,13 +71,7 @@ class SubscriptionTest extends TestCase
         $this->json('post', '/api/subscriptions/subscribe', $payload)
         // Assert
             ->assertStatus(201)
-            ->assertJsonStructure([
-                  'msisdn',
-                  'product_id',
-                  'created_at',
-                  'updated_at',
-                  'subscribed_date'
-            ]);
+            ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id]);
     }
 
     /** @test */
@@ -141,9 +135,9 @@ class SubscriptionTest extends TestCase
         // Assert
             ->assertStatus(200)
             ->assertJson([
-                'msisdn' => [$active_subscription->msisdn],
-                'product_id' => [$active_subscription->product_id],
-                'active' => [0]
+                'msisdn' => $active_subscription->msisdn,
+                'product_id' => $active_subscription->product_id,
+                'active' => 0
             ]);
     }
 
