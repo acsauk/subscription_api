@@ -142,7 +142,7 @@ class SubscriptionTest extends TestCase
     }
 
     /** @test */
-    public function user_can_search_for_subscription_with_msisdn_and_product_id()
+    public function user_can_search_for_subscription_with_msisdn_and_product_id_query_string()
     {
         // Arrange
         $active_subscription = factory(Subscription::class)->create();
@@ -177,6 +177,31 @@ class SubscriptionTest extends TestCase
         $response->assertStatus(200)
           // Mimic auto-decoding in laravel
           ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id, 'active' => 1]);
+    }
+
+    /** @test */
+    public function user_can_search_for_subscription_with_msisdn_and_product_id_json()
+    {
+        // Arrange
+        $active_subscription = factory(Subscription::class)->create(
+            ['msisdn' => '+447535123123']
+        );
+
+        $payload = [
+            'msisdn' => $active_subscription->msisdn,
+            'product_id' => $active_subscription->product_id
+        ];
+
+        // Act
+        $this->json('post', '/api/subscriptions', $payload)
+        // Assert
+            ->assertStatus(200)
+            ->assertJson([
+                'msisdn' => $active_subscription->msisdn,
+                'product_id' => $active_subscription->product_id,
+                'active' => 1,
+                'subscribed_date' => $active_subscription->subscribed_date
+            ]);
     }
 
     /** @test */
