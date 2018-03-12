@@ -87,7 +87,9 @@ class SubscriptionTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
-          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => 0]);
+          ->assertJson(['msisdn' => $msisdn,
+                        'product_id' => $product_id,
+                        'active' => 0]);
 
         $updated_subscription = Subscription::find($active_subscription->id);
         $this->assertEquals($updated_subscription->active, 0);
@@ -111,7 +113,9 @@ class SubscriptionTest extends TestCase
         // Assert
         $response->assertStatus(200)
         // Mimic auto-decoding in laravel
-          ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id, 'active' => 0]);
+          ->assertJson(['msisdn' => urldecode($msisdn),
+                        'product_id' => $product_id,
+                        'active' => 0]);
 
         $updated_subscription = Subscription::find($active_subscription->id);
         $this->assertEquals($updated_subscription->active, 0);
@@ -137,8 +141,7 @@ class SubscriptionTest extends TestCase
             ->assertJson([
                 'msisdn' => $active_subscription->msisdn,
                 'product_id' => $active_subscription->product_id,
-                'active' => 0
-            ]);
+                'active' => 0]);
     }
 
     /** @test */
@@ -155,7 +158,9 @@ class SubscriptionTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
-          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id, 'active' => 1]);
+          ->assertJson(['msisdn' => $msisdn,
+                        'product_id' => $product_id,
+                        'active' => 1]);
     }
 
     /** @test */
@@ -176,7 +181,9 @@ class SubscriptionTest extends TestCase
         // Assert
         $response->assertStatus(200)
           // Mimic auto-decoding in laravel
-          ->assertJson(['msisdn' => urldecode($msisdn), 'product_id' => $product_id, 'active' => 1]);
+          ->assertJson(['msisdn' => urldecode($msisdn),
+                        'product_id' => $product_id,
+                        'active' => 1]);
     }
 
     /** @test */
@@ -200,8 +207,7 @@ class SubscriptionTest extends TestCase
                 'msisdn' => $active_subscription->msisdn,
                 'product_id' => $active_subscription->product_id,
                 'active' => 1,
-                'subscribed_date' => $active_subscription->subscribed_date
-            ]);
+                'subscribed_date' => $active_subscription->subscribed_date]);
     }
 
     /** @test */
@@ -266,7 +272,7 @@ class SubscriptionTest extends TestCase
         // Arrange
         $active_subscription_1 = factory(Subscription::class)->create();
         $active_subscription_2 = factory(Subscription::class)->create(
-          ['msisdn' => '07535123456']
+            ['msisdn' => '07535123456']
         );
 
         // Act
