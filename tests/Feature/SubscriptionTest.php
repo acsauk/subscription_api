@@ -12,7 +12,7 @@ class SubscriptionTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function user_can_subscribe_a_phone_to_product_id()
+    public function user_can_subscribe_a_phone_to_product_id_query_string()
     {
         // Arrange
         $msisdn = '07535123123';
@@ -20,6 +20,44 @@ class SubscriptionTest extends TestCase
 
         // Act
         $response = $this->get("/api/subscriptions/subscribe?msisdn={$msisdn}&product_id={$product_id}");
+
+        // Assert
+        $response->assertStatus(201)
+          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id]);
+
+        $content = json_decode($response->getContent(), true);
+
+        $subscription = Subscription::find($content['id']);
+        $this->assertEquals($subscription->active, 1);
+    }
+
+    /** @test */
+    public function user_can_subscribe_a_phone_to_product_id_json()
+    {
+        // Arrange
+        $msisdn = '07535123123';
+        $product_id = 'productid1';
+
+        $payload = [
+            'msisdn' => '07535123123',
+            'product_id' => 'productid1'
+        ];
+
+        // Act
+        $this->json('post', '/api/subscriptions/subscribe', $payload)
+        // Assert
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                'data' => [
+                    'msisdn',
+                    'product_id',
+                    'active',
+                    'created_at',
+                    'updated_at',
+                    'subscribed_date',
+                    'unsubscribed_date',
+                ],
+            ]);
 
         // Assert
         $response->assertStatus(201)
