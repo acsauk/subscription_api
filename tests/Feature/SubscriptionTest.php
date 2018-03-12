@@ -48,25 +48,12 @@ class SubscriptionTest extends TestCase
         // Assert
             ->assertStatus(201)
             ->assertJsonStructure([
-                'data' => [
-                    'msisdn',
-                    'product_id',
-                    'active',
-                    'created_at',
-                    'updated_at',
-                    'subscribed_date',
-                    'unsubscribed_date',
-                ],
+                  'msisdn',
+                  'product_id',
+                  'created_at',
+                  'updated_at',
+                  'subscribed_date'
             ]);
-
-        // Assert
-        $response->assertStatus(201)
-          ->assertJson(['msisdn' => $msisdn, 'product_id' => $product_id]);
-
-        $content = json_decode($response->getContent(), true);
-
-        $subscription = Subscription::find($content['id']);
-        $this->assertEquals($subscription->active, 1);
     }
 
     /** @test */

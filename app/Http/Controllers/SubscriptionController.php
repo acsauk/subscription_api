@@ -11,11 +11,13 @@ class SubscriptionController extends Controller
 {
     public function subscribe(Request $request)
     {
-        return Subscription::create([
+        $subscription = Subscription::create([
           'msisdn' => $request->input('msisdn'),
           'product_id' => $request->input('product_id'),
           'subscribed_date' => Carbon::now()->format('Y-m-d')
         ]);
+        
+        return response()->json($subscription, 201);
     }
 
     public function unsubscribe(Request $request)
